@@ -1,0 +1,7 @@
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+from django.http import HttpResponseRedirect, HttpResponse
+import json
+
+def landing(request):
+	return render_to_response('graphs/index.html',context_instance=RequestContext(request))
