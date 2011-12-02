@@ -2,28 +2,41 @@
 
 
 {% block head %}
-     	<script src="/media/main.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+	$('.toauthenticate').click(function(){
+		srcURL = getTokenURL()
+		$('.gimmeauth').show('fast');
+		$('.toauthenticate').hide('fast')
+	});
+	
+	$('.close').click(function(){
+		$('.gimmeauth').hide('fast')
+	});
+});
+
+function getTokenURL(){
+	$.ajax({
+		url: '/gimmeauth/',
+		type:"GET",
+		success: function(data){
+			$('.gimmebar').attr('src',data.url)
+		}
+	});
+}
+
+</script>
 {% endblock %}
 
 {% block content %}
-<div class="container" style = "margin-right=auto; margin-left=auto; width = 1200px;">
-	<div class= "block" style="height: 200px">
-	   <img src = "http://chart.apis.google.com/chart?cht=lc&chd=t:1,2,1,3,5,3,1,1,4,3,1,1,3,5,3,1,1,0,0,01,2,1,3,5,3,1,1,4,3,1,1,3,5,3,1,1,0,0,0|0,1,2,1,1,3,0,0,1,3,4,2,1,1,3,0,0,1,0,0,0,1,0,3,1,0,0,0,0,0,1,0,3,1,0,0,0,0,0,1|0,1,1,0,1,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,1,2,1,1,3,0,0,1,3,4,2,1,1,3,0,0,1,0,0|0,1,0,3,1,0,0,0,0,0,1,2,3,1,1,2,5,4,0,10,1,0,3,1,0,0,0,0,0,1,0,3,1,0,0,0,0,0,1|0,0&chds=0,6&chls=0,1,0|0,1,0|0,1,0|0,1,0|0,1,0|0,1,0&chs=1000x125&chm=b,99ff00,0,1,0|b,ffff00,1,2,0|b,ff9900,2,3,0|b,ff3300,3,4,0">
-	   <div style="color:#000000;">all of your collections</div>
-	</div>
-	<div class= "block" style="height: 200px;">
-	   <img src = "http://chart.apis.google.com/chart?cht=lc&chd=t:1,2,1,3,5,3,1,1,4,3,1,1,3,5,3,1,1,0,0,01,2,1,3,5,3,1,1,4,3,1,1,3,5,3,1,1,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0&chds=0,6&chls=0,1,0|0,1,0|0,1,0|0,1,0|0,1,0|0,1,0&chs=1000x125&chm=b,99ff00,0,1,0|b,ffff00,1,2,0|b,ff9900,2,3,0|b,ff3300,3,4,0">
-	   <div style="color:#99ff00;">turgles</div>
-	</div>
-
-	<div class= "block" style="height: 200px;">
-	   <img src = "http://chart.apis.google.com/chart?cht=lc&chd=t:0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,1,1,0,1,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,1,2,1,1,3,0,0,1,3,4,2,1,1,3,0,0,1,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0&chds=0,6&chls=0,1,0|0,1,0|0,1,0|0,1,0|0,1,0|0,1,0&chs=1000x125&chm=b,99ff00,0,1,0|b,ffff00,1,2,0|b,ff9900,2,3,0|b,ff3300,3,4,0">
-	   <div style="color:#ff9900;">burgles</div>
-	</div>
-		<div class= "block" style="height: 200px;">
-	   <img src = "http://chart.apis.google.com/chart?cht=lc&chd=t:0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,1,0,3,1,0,0,0,0,0,1,2,3,1,1,2,5,4,0,10,1,0,3,1,0,0,0,0,0,1,0,3,1,0,0,0,0,0,1|0,0&chds=0,6&chls=0,1,0|0,1,0|0,1,0|0,1,0|0,1,0|0,1,0&chs=1000x125&chm=b,99ff00,0,1,0|b,ffff00,1,2,0|b,ff9900,2,3,0|b,ff3300,3,4,0">
-	   <div style="color:#ff3300;">foondangles</div>
+<div class="content">
+	<div>LANDING PAGE</div>
+	<div class="toauthenticate"><a>authenticate</a></div>
+	<div class="gimmeauth">
+		<div class="close">CLOSE</div>
+		<iframe class="gimmebar"></iframe>
 	</div>
 </div>
-
 {% endblock %}
