@@ -22,6 +22,8 @@ import urllib
 base_url = 'https://gimmebar.com/api/v0'
 client_id = '4eab0fb02e0aaae406000031'
 client_secret = '5e8c86bf6f93caf9c4da649303607fca'
+token = ''
+
 
 # AUTHENTICATE THE USER
 def landing(request):
@@ -33,10 +35,31 @@ def authenticate(request):
 	params = urllib.urlencode({'client_id': client_id, 'client_secret':client_secret, 'type':'app'})
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
-	url = "https://gimmebar.com/authorize?client_id="+client_id+"&token="+data['request_token']+"&response_type=code"
+	token = data['request_token']
+	url = "https://gimmebar.com/authorize?client_id="+client_id+"&token="+token+"&response_type=code"
 	updates = {'url': url}
-	print updates
+	# STEP 2:
 	return HttpResponse(json.dumps(updates), mimetype="application/json")
+
+def exchange(request):
+	# STEP 3: Exchange the request token for an authorization token when the user returns
+	post_url = '/auth/exchange/request'
+	params = urllib.urlencode({'client_id': client_id, 'token':token, 'response_type':'code'})
+	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
+	data = json.loads(data)
+	code = data['code']
+	
+	# STEP 4: Exchange the authorization token for an access token
+	post_url = '/auth/exchange/authorization'
+	params = urllib.urlencode({'code': code, 'grant_type':'authorization_code'})
+	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
+	data = json.loads(data)
+	access_token = data['access_token']
+	
+	# STEP 5: Use the access token to authenticate with the API and retrieve user data
+	post_url = '/tags'
+	params = urllib.urlencode({})
+	
 	
 def graphs(request):
 	now = format(datetime.datetime.now(), u'U')

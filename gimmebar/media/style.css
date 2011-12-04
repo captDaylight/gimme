@@ -46,3 +46,6 @@ iframe{
 	width:300px;
 	height:400px;
 }
+.next:hover{
+	color:#0099ff;
+}

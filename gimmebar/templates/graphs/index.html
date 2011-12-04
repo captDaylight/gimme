@@ -14,6 +14,7 @@ $(document).ready(function(){
 	
 	$('.close').click(function(){
 		$('.gimmeauth').hide('fast')
+		$('.toauthenticate').show('fast')
 	});
 });
 
@@ -37,6 +38,7 @@ function getTokenURL(){
 	<div class="gimmeauth">
 		<div class="close">CLOSE</div>
 		<iframe class="gimmebar"></iframe>
+		<div class="next">NEXT>></div>
 	</div>
 </div>
 {% endblock %}
