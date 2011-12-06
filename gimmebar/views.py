@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import simplejson
+import urllib
 import urllib2
 import json
 import datetime
@@ -16,6 +17,9 @@ base_url_2 = "&chs=1000x125&chm="
 
 # "http://chart.apis.google.com/chart?cht=lc&chd=t:1,2,1,3,5,3,1,1,4,3,1,1,3,5,3,1,1,0,0,01,2,1,3,5,3,1,1,4,3,1,1,3,5,3,1,1,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|0,0&chds=0,6&chls=0,1,0|0,1,0|0,1,0|0,1,0|0,1,0|0,1,0&chs=1000x125&chm=b,99ff00,0,1,0|b,ffff00,1,2,0|b,ff9900,2,3,0|b,ff3300,3,4,0"
 
+
+# Information about the Gimme API 
+# https://gimmebar.com/api/v0
 
 import urllib
 
@@ -38,28 +42,37 @@ def authenticate(request):
 	token = data['request_token']
 	url = "https://gimmebar.com/authorize?client_id="+client_id+"&token="+token+"&response_type=code"
 	updates = {'url': url}
+	print "step 1"
 	# STEP 2:
 	return HttpResponse(json.dumps(updates), mimetype="application/json")
 
 def exchange(request):
+	print "step 2"
 	# STEP 3: Exchange the request token for an authorization token when the user returns
 	post_url = '/auth/exchange/request'
 	params = urllib.urlencode({'client_id': client_id, 'token':token, 'response_type':'code'})
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
 	code = data['code']
-	
+	print "step 3"
 	# STEP 4: Exchange the authorization token for an access token
 	post_url = '/auth/exchange/authorization'
-	params = urllib.urlencode({'code': code, 'grant_type':'authorization_code'})
+	params = urllib.urlencode({'code': code,'grant_type':'authorization_code'})
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
 	access_token = data['access_token']
-	
+	print "step 4"
 	# STEP 5: Use the access token to authenticate with the API and retrieve user data
 	post_url = '/tags'
-	params = urllib.urlencode({})
-	
+	headers = {'Authorization': 'Bearer %s' % access_token}
+	query = '/collections'
+	params = urllib.urlencode('%s%s' % (base_url, post_url), query)
+	req = urllib2.Request(url, params, headers)
+	response = urllib2.urlopen(req)
+	the_page = response.read()
+	print "step 5"
+	return render_to_response('graphs/exchange.html',context_instance=RequestContext(request))
+
 	
 def graphs(request):
 	now = format(datetime.datetime.now(), u'U')

@@ -16,11 +16,25 @@ $(document).ready(function(){
 		$('.gimmeauth').hide('fast')
 		$('.toauthenticate').show('fast')
 	});
+	
+	$('.next').click(function(){
+		exchange = exchange();
+	});
 });
 
 function getTokenURL(){
 	$.ajax({
 		url: '/gimmeauth/',
+		type:"GET",
+		success: function(data){
+			window.open(data.url);
+		}
+	});
+}
+
+function exchange(){
+	$.ajax({
+		url: '/exchange/',
 		type:"GET",
 		success: function(data){
 			$('.gimmebar').attr('src',data.url)
@@ -38,7 +52,7 @@ function getTokenURL(){
 	<div class="gimmeauth">
 		<div class="close">CLOSE</div>
 		<iframe class="gimmebar"></iframe>
-		<div class="next">NEXT>></div>
+		<div class="next"><a href="/exchange/">NEXT>></a></div>
 	</div>
 </div>
 {% endblock %}
