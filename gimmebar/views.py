@@ -39,7 +39,8 @@ def authenticate(request):
 	params = urllib.urlencode({'client_id': client_id, 'client_secret':client_secret, 'type':'app'})
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
-	token = data['request_token']
+	token = str(data['request_token'])
+	print "here is the token"
 	url = "https://gimmebar.com/authorize?client_id="+client_id+"&token="+token+"&response_type=code"
 	updates = {'url': url}
 	print "step 1"
