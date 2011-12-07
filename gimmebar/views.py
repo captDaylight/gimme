@@ -26,8 +26,6 @@ import urllib
 base_url = 'https://gimmebar.com/api/v0'
 client_id = '4eab0fb02e0aaae406000031'
 client_secret = '5e8c86bf6f93caf9c4da649303607fca'
-token = ''
-
 
 # AUTHENTICATE THE USER
 def landing(request):
@@ -39,16 +37,17 @@ def authenticate(request):
 	params = urllib.urlencode({'client_id': client_id, 'client_secret':client_secret, 'type':'app'})
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
-	token = str(data['request_token'])
+	token = data['request_token']
 	print "here is the token"
 	url = "https://gimmebar.com/authorize?client_id="+client_id+"&token="+token+"&response_type=code"
-	updates = {'url': url}
+	updates = {'url': url, 'token':token}
 	print "step 1"
 	# STEP 2:
 	return HttpResponse(json.dumps(updates), mimetype="application/json")
 
 def exchange(request):
 	print "step 2"
+	token = request.GET.get('token', '')
 	# STEP 3: Exchange the request token for an authorization token when the user returns
 	post_url = '/auth/exchange/request'
 	params = urllib.urlencode({'client_id': client_id, 'token':token, 'response_type':'code'})

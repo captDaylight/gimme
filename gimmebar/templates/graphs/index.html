@@ -28,6 +28,8 @@ function getTokenURL(){
 		type:"GET",
 		success: function(data){
 			window.open(data.url);
+			var exchangeURL = '/exchange/?token='+data.token;
+			$('.nexturl').attr('href',exchangeURL);
 		}
 	});
 }
@@ -51,7 +53,7 @@ function exchange(){
 	<div class="toauthenticate"><a>authenticate</a></div>
 	<div class="gimmeauth">
 		<div class="close">CLOSE</div>
-		<div class="next"><a href="/exchange/">when you have accepted, click NEXT>></a></div>
+		<div class="next"><a class="nexturl">when you have accepted, click NEXT>></a></div>
 	</div>
 </div>
 {% endblock %}
