@@ -67,11 +67,11 @@ def exchange(request):
 	headers = {'Authorization': 'Bearer %s' % access_token}
 	query = '/collections'
 	params = urllib.urlencode({})
-	req = urllib2.Request('%s%s%s' % (base_url, post_url, query),params)
+	req = urllib2.Request('%s%s%s' % (base_url, post_url, query), headers=headers)
 	print req
-# 	response = urllib2.urlopen(req)
-# 	print response
-# 	the_page = response.read()
+	response = urllib2.urlopen(req)
+	print response
+	the_page = response.read()
 	print "step 5"
 	return render_to_response('graphs/exchange.html',context_instance=RequestContext(request))
 
