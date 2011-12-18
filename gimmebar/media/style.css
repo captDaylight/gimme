@@ -28,7 +28,11 @@ label {
   padding-left: 15px;
   text-indent: -15px;
 }
-
+.close{
+	font-size:10px;
+	margin: 2px;
+	width:50px; 
+}
 .close:hover{
 	color:#0099ff;
 }
@@ -48,4 +52,9 @@ iframe{
 }
 .next:hover{
 	color:#0099ff;
+}
+
+.categories{
+	font-size: 10px;
+	margin-left: 100px;
 }

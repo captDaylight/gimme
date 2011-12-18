@@ -38,15 +38,12 @@ def authenticate(request):
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
 	token = data['request_token']
-	print "here is the token"
 	url = "https://gimmebar.com/authorize?client_id="+client_id+"&token="+token+"&response_type=code"
 	updates = {'url': url, 'token':token}
-	print "step 1"
 	# STEP 2:
 	return HttpResponse(json.dumps(updates), mimetype="application/json")
 
 def exchange(request):
-	print "step 2"
 	token = request.GET.get('token', '')
 	# STEP 3: Exchange the request token for an authorization token when the user returns
 	post_url = '/auth/exchange/request'
@@ -54,28 +51,57 @@ def exchange(request):
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
 	code = data['code']
-	print "step 3"
 	# STEP 4: Exchange the authorization token for an access token
 	post_url = '/auth/exchange/authorization'
 	params = urllib.urlencode({'code': code,'grant_type':'authorization_code'})
 	data = urllib2.urlopen('%s%s' % (base_url, post_url), params).read()
 	data = json.loads(data)
 	access_token = data['access_token']
-	print "step 4"
 	# STEP 5: Use the access token to authenticate with the API and retrieve user data
-	post_url = '/tags'
+	print access_token
+	post_url = '/collections'
 	headers = {'Authorization': 'Bearer %s' % access_token}
-	query = '/collections'
 	params = urllib.urlencode({})
-	req = urllib2.Request('%s%s%s' % (base_url, post_url, query), headers=headers)
-	print req
+	full_url = '%s%s' % (base_url, post_url)
+	req = urllib2.Request(full_url, headers=headers)
 	response = urllib2.urlopen(req)
-	print response
-	the_page = response.read()
-	print "step 5"
-	return render_to_response('graphs/exchange.html',context_instance=RequestContext(request))
-
+	html = response.read()
+	obj = json.loads(html)
 	
+# 	CREATE THE PIE CHART URL AND INFO
+	graph_base = 'http://chart.apis.google.com/chart?cht=p&chd=t:'
+	graph_middle = ''
+	graph_end = '&chco=ff3300&chs=300x300&chf=bg,s,EFEFEF00'
+	
+	collection_list = []
+	categories = []
+	
+# 	create the list of data for the pie chart
+	for o in obj:
+		try:
+			collection_list.append(len(o['assets']))
+			categories.append({'title':o['title'],'amount':len(o['assets'])})
+		except:
+			collection_list.append(0)
+			categories.append({'title':o['title'],'amount':0})
+
+	collection_list.sort()
+	collection_list.reverse()
+	first = True
+	
+# 	turn the list into a string of data with commas
+	for x in collection_list:
+		if first is True:
+			graph_middle = str(x)
+			first = False
+		else:
+			graph_middle = graph_middle+','+str(x)
+	graph_url = graph_base + graph_middle + graph_end
+	print graph_url
+	return render_to_response('graphs/exchange.html',{'graph_url':graph_url,'categories':categories},context_instance=RequestContext(request))
+# <div class="image" id="medium"><div class="subtitle">1. categories</div><img src="http://chart.apis.google.com/chart?cht=p&chd=t:100,33,25,19,12,8,6,6,5,3,3,2,2,2,2,1,0,0,0,0&chco=ff3300&chs=150x150&chf=bg,s,EFEFEF00" alt="pie" style="margin-right:40px;"/></div>
+
+
 def graphs(request):
 	now = format(datetime.datetime.now(), u'U')
 	response = urllib2.urlopen('https://gimmebar.com/api/v0/public/assets/tmincey/assorted-awesome?limit=50')

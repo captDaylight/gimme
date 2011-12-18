@@ -5,5 +5,13 @@
 {% endblock %}
 
 {% block content %}
-<div>exchange</div>
+{% if graph_url %}
+<img src="{{graph_url}}" alt="pie" style="margin-right:40px;"/>
+{% endif %}
+
+{% if categories%}
+{%for c in categories|dictsortreversed:"amount"%}
+<div class="categories" id="{{c.title}}">{{c.amount}} {{c.title}}</div>
+{% endfor %}
+{% endif%}
 {% endblock %}
